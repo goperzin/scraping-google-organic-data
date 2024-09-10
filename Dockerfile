@@ -1,7 +1,6 @@
-# Use a imagem oficial do Node.js com a versão LTS (inclui o sistema Debian slim)
 FROM node:20-slim
 
-# Instalar dependências necessárias para o Puppeteer
+# Instalar dependências do sistema necessárias para o Puppeteer
 RUN apt-get update && apt-get install -y \
     curl \
     gnupg \
@@ -32,13 +31,17 @@ RUN rm -rf /var/lib/apt/lists/*
 ENV PUPPETEER_EXECUTABLE_PATH=/usr/bin/chromium
 
 # Definir o diretório de trabalho
-WORKDIR /src
+WORKDIR /usr/src/app
 
-# Copiar apenas arquivos de configuração e dependências
+# Copiar arquivos de dependências do projeto
 COPY package*.json ./
 
 # Instalar dependências do Node.js
 RUN npm install
 
-# Copiar o restante dos arquivos do projeto
+# Copiar todo o restante dos arquivos do projeto
 COPY . .
+
+# Definir o comando de inicialização
+CMD ["sh", "-c", "node src/main.js & tail -f /dev/null"]
+
